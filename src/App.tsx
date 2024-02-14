@@ -1,11 +1,11 @@
-import React, { useState, useEffect, FunctionComponent } from 'react';
-import './App.css';
-import Button from './components/ui-kit/button';
-import InputText from './components/ui-kit/inputText';
-import DatePicker from 'react-date-picker';
-import 'react-date-picker/dist/DatePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import Checkbox from './components/ui-kit/checkbox';
+import React, { useState, useEffect, FunctionComponent } from "react";
+import "./App.css";
+import Button from "./components/ui-kit/button";
+import InputText from "./components/ui-kit/inputText";
+import DatePicker from "react-date-picker";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
+import Checkbox from "./components/ui-kit/checkbox";
 
 interface Task {
   text: string;
@@ -14,14 +14,14 @@ interface Task {
 }
 
 const App: FunctionComponent = () => {
-  const [taskInput, setTaskInput] = useState('');
+  const [taskInput, setTaskInput] = useState("");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [editedText, setEditedText] = useState('');
+  const [editedText, setEditedText] = useState("");
   const [isDeadlineOpened, setIsDeadlineOpened] = useState(false);
   const [deadlineIndex, setDeadlineIndex] = useState<Number>();
   const [isDeadlineChecked, setIsDeadlineChecked] = useState(false);
-  const [deadlineNewTask, setDeadlineNewTask] = useState('Додати дедлайн');
+  const [deadlineNewTask, setDeadlineNewTask] = useState("Додати дедлайн");
 
   useEffect(() => {
     loadTasksFromLocalStorage();
@@ -34,7 +34,7 @@ const App: FunctionComponent = () => {
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       addTask();
     }
   };
@@ -54,10 +54,10 @@ const App: FunctionComponent = () => {
 
   const addTask = () => {
     const trimmedText = taskInput.trim();
-    if (trimmedText !== 'AMCbridge' && trimmedText !== '') {
+    if (trimmedText !== "AMCbridge" && trimmedText !== "") {
       createTask(trimmedText, false, deadlineNewTask);
-      setDeadlineNewTask('Додати дедлайн');
-      setTaskInput('');
+      setDeadlineNewTask("Додати дедлайн");
+      setTaskInput("");
     }
     saveTasksToLocalStorage();
   };
@@ -89,9 +89,9 @@ const App: FunctionComponent = () => {
     event
   ) => {
     if (
-      event.key === 'Enter' &&
-      editedText.trim() !== 'AMCbridge' &&
-      editedText.trim() !== ''
+      event.key === "Enter" &&
+      editedText.trim() !== "AMCbridge" &&
+      editedText.trim() !== ""
     ) {
       if (editingTask) {
         editingTask.text = editedText.trim();
@@ -102,11 +102,11 @@ const App: FunctionComponent = () => {
   };
 
   const saveTasksToLocalStorage = () => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   };
 
   const loadTasksFromLocalStorage = () => {
-    const tasksJSON = localStorage.getItem('tasks');
+    const tasksJSON = localStorage.getItem("tasks");
 
     if (tasksJSON) {
       const loadedTasks: Task[] = JSON.parse(tasksJSON);
@@ -114,18 +114,17 @@ const App: FunctionComponent = () => {
     }
   };
 
-  window.addEventListener('beforeunload', saveTasksToLocalStorage);
+  window.addEventListener("beforeunload", saveTasksToLocalStorage);
 
   return (
-    <div>
+    <>
       <header>
         <h1>Список справ</h1>
       </header>
-      <div className='inputpole'>
-        <InputText
+      <section className="inputpole"><InputText
           focus={false}
-          inputText={'Введіть завдання'}
-          id={'taskInput'}
+          inputText={"Введіть завдання"}
+          id={"taskInput"}
           value={taskInput}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
@@ -134,16 +133,15 @@ const App: FunctionComponent = () => {
         {!isDeadlineChecked ? (
           <Checkbox
             isChecked={isDeadlineChecked}
-            onChange={() => setIsDeadlineChecked(!isDeadlineChecked)}
-          >
+            onChange={() => setIsDeadlineChecked(!isDeadlineChecked)}>
             {deadlineNewTask}
           </Checkbox>
         ) : (
           <DatePicker
-            // autoFocus // криво працює (або я криво зробив) =(
+            // autoFocus // криво працює (або я криво зробив) =( 
             minDate={new Date()}
             maxDate={new Date(2100, 0, 1)}
-            format='dd-MM-yyyy'
+            format="dd-MM-yyyy"
             disableCalendar={true}
             onChange={(date) => {
               if (date !== null && date instanceof Date && date > new Date()) {
@@ -155,28 +153,26 @@ const App: FunctionComponent = () => {
         )}
 
         <Button
-          buttonText={'Додати'}
+          buttonText={"Додати"}
           handleClick={addTask}
           disabled={!taskInput.trim()}
-        />
-      </div>
+        /></section>
 
       <ul>
         {tasks.map((task, index) => (
-          <li key={index} className='task'>
+          <li key={index} className="task">
             <Checkbox
               isChecked={task.completed}
               onChange={() => toggleTaskStatus(task)}
             />
             <span
               onClick={() => toggleTaskStatus(task)}
-              id={`task${task.completed}`}
-            >
+              id={`task${task.completed}`}>
               {editingTask === task ? (
                 <InputText
                   focus={true}
-                  inputText={'Введіть завдання'}
-                  id={'editTextInput'}
+                  inputText={"Введіть завдання"}
+                  id={"editTextInput"}
                   value={editedText}
                   onChange={handleInputChange}
                   onKeyDown={finishEditing}
@@ -187,10 +183,10 @@ const App: FunctionComponent = () => {
             </span>
 
             <Button
-              buttonText={'Видалити'}
+              buttonText={"Видалити"}
               handleClick={() => deleteTask(task)}
               disabled={false}
-              id='deleteButton'
+              id="deleteButton"
             />
 
             {isDeadlineOpened && index === deadlineIndex ? (
@@ -198,7 +194,7 @@ const App: FunctionComponent = () => {
                 // autoFocus // криво працює (або я криво зробив) =(
                 minDate={new Date()}
                 maxDate={new Date(2100, 0, 1)}
-                format='dd-MM-yyyy'
+                format="dd-MM-yyyy"
                 disableCalendar={true}
                 onChange={(date) => {
                   setIsDeadlineOpened(false);
@@ -218,22 +214,22 @@ const App: FunctionComponent = () => {
                   setDeadlineIndex(index);
                 }}
                 disabled={false}
-                id={''}
+                id={""}
               />
             )}
 
             <Button
-              buttonText={'Редагувати'}
+              buttonText={"Редагувати"}
               handleClick={() => {
                 editTask(task);
               }}
               disabled={false}
-              id={''}
+              id={""}
             />
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 };
 
